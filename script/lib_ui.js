@@ -1,100 +1,30 @@
-// Visualization palette for temperature (mean, min and max) and 2m dewpoint
-// temperature
-var vis2mt = {
-  min: 250,
-  max: 320,
-  palette: [
-    '#000080', '#0000D9', '#4000FF', '#8000FF', '#0080FF', '#00FFFF', '#00FF80',
-    '#80FF00', '#DAFF00', '#FFFF00', '#FFF500', '#FFDA00', '#FFB000', '#FFA400',
-    '#FF4F00', '#FF2500', '#FF0A00', '#FF00FF'
-  ]
-};
-
-exports.palettes = {
-  temperature: [
-    '#000080', '#0000D9', '#4000FF', '#8000FF', '#0080FF', '#00FFFF', '#00FF80',
-    '#80FF00', '#DAFF00', '#FFFF00', '#FFF500', '#FFDA00', '#FFB000', '#FFA400',
-    '#FF4F00', '#FF2500', '#FF0A00', '#FF00FF'
-  ]
-}
-// Legend style constants
-var LegendStyle = 
-    {
-      Title : {
-        fontSize: '20px',
-        fontWeight: 'bold',
-        stretch: 'horizontal',
-        textAlign: 'center',
-        margin: '4px',
-      },
-      Normal : {
-        fontSize: '10px',
-        stretch: 'horizontal',
-        textAlign: 'center',
-        margin: '4px',
-      },
-      Footnote : {
-        fontSize: '10px',
-        stretch: 'horizontal',
-        textAlign: 'center',
-        margin: '4px',
-      }
-    },
-    PopulationStyle = {
-      min: 0,
-      max: 1,
-      palette: ['lightyellow', 'steelblue', 'darkblue']
-    },
-    CountriesStyle = {color: '26458d', fillColor: '00000000'},
-    HighlightStyle = {color: '8856a7', fillColor: '8856a7C0'};
-    
-var POPULATION_VIS_MAX_VALUE = 1200;
-var POPULATION_VIS_NONLINEARITY = 4;
-
-function ColorBar(width, height, palette)
-{
-    return ui.Thumbnail({
-      image: ee.Image.pixelLonLat().select(0),
-      params: {
-        bbox: [0, 0, 1, 0.1],
-        dimensions: String(width)+'x'+String(height),
-        format: 'png',
-        min: 0,
-        max: 1,
-        palette: palette,
-      },
-      style: {stretch: 'horizontal', margin: '0px 8px'},
-    });  
-}
-
-function undoColorStretch(val) {
-  return Math.pow(val, POPULATION_VIS_NONLINEARITY) * POPULATION_VIS_MAX_VALUE;
-}
-
-function LegendGauge()
-{
-    var labelPanel = ui.Panel(
-      [
-        ui.Label(Math.round(undoColorStretch(0)), {margin: '4px 8px'}),
-        ui.Label(
-            Math.round(undoColorStretch(0.5)),
-            {margin: '4px 8px', textAlign: 'center', stretch: 'horizontal'}),
-        ui.Label(Math.round(undoColorStretch(1)), {margin: '4px 8px'})
-      ],
-      ui.Panel.Layout.flow('horizontal'));
-  return ui.Panel([ColorBar(100, 10, PopulationStyle.palette), labelPanel]);
-}
-
-exports.LegendPanel = function()
-{
-    return ui.Panel(
-      [
-        ui.Label('Densidade populacional', LegendStyle.Title),
-        LegendGauge(),
-        ui.Label('(milhares de pessoas por km^2)', LegendStyle.Normal),
-        ui.Label('Fontes: Global Human Settlement Layer (JRC)', LegendStyle.Normal),
-        ui.Label('e USDOS LSIB', LegendStyle.Normal)
-      ],
-      ui.Panel.Layout.flow('vertical'),
-      {width: '330px', position: 'bottom-left'});
-}
+// Video gradient palette
+exports.Video={ palette:['#ffffff', '#fffffd', '#fffffb', '#fffff9', '#fffff7', '#fffff5', '#fffff3', '#fffff1', '#ffffef',
+                        '#ffffed', '#ffffeb', '#ffffe9', '#ffffe7', '#ffffe5', '#ffffe3', '#ffffe1', '#ffffdf', '#ffffdd',
+                        '#ffffdb', '#ffffd9', '#ffffd7', '#ffffd5', '#ffffd3', '#ffffd1', '#ffffcf', '#ffffcd', '#ffffcb',
+                        '#ffffc9', '#ffffc7', '#ffffc5', '#ffffc3', '#ffffc1', '#ffffbf', '#ffffbd', '#ffffbb', '#ffffb9',
+                        '#ffffb7', '#ffffb5', '#ffffb3', '#ffffb1', '#ffffaf', '#ffffad', '#ffffab', '#ffffa9', '#ffffa7',
+                        '#ffffa5', '#ffffa3', '#ffffa1', '#ffff9f', '#ffff9d', '#ffff9b', '#ffff99', '#ffff97', '#ffff95',
+                        '#ffff93', '#ffff91', '#ffff8f', '#ffff8d', '#ffff8b', '#ffff89', '#ffff87', '#ffff85', '#ffff83',
+                        '#ffff81', '#fffe7f', '#fffc7d', '#fffa7b', '#fff879', '#fff677', '#fff475', '#fff273', '#fff071',
+                        '#ffee6f', '#ffec6d', '#ffea6b', '#ffe869', '#ffe667', '#ffe465', '#ffe263', '#ffe061', '#ffde5f',
+                        '#ffdc5d', '#ffda5b', '#ffd859', '#ffd657', '#ffd455', '#ffd253', '#ffd051', '#ffce4f', '#ffcc4d',
+                        '#ffca4b', '#ffc849', '#ffc647', '#ffc445', '#ffc243', '#ffc041', '#ffbe3f', '#ffbc3d', '#ffba3b',
+                        '#ffb839', '#ffb637', '#ffb435', '#ffb233', '#ffb031', '#ffae2f', '#ffac2d', '#ffaa2b', '#ffa829',
+                        '#ffa627', '#ffa425', '#ffa223', '#ffa021', '#ff9e1f', '#ff9c1d', '#ff9a1b', '#ff9819', '#ff9617',
+                        '#ff9415', '#ff9213', '#ff9011', '#ff8e0f', '#ff8c0d', '#ff8a0b', '#ff8809', '#ff8607', '#ff8405',
+                        '#ff8203', '#ff8001', '#fe7e00', '#fc7c00', '#fa7a00', '#f87800', '#f67600', '#f47400', '#f27200',
+                        '#f07000', '#ee6e00', '#ec6c00', '#ea6a00', '#e86800', '#e66600', '#e46400', '#e26200', '#e06000',
+                        '#de5e00', '#dc5c00', '#da5a00', '#d85800', '#d65600', '#d45400', '#d25200', '#d05000', '#ce4e00',
+                        '#cc4c00', '#ca4a00', '#c84800', '#c64600', '#c44400', '#c24200', '#c04000', '#be3e00', '#bc3c00',
+                        '#ba3a00', '#b83800', '#b63600', '#b43400', '#b23200', '#b03000', '#ae2e00', '#ac2c00', '#aa2a00',
+                        '#a82800', '#a62600', '#a42400', '#a22200', '#a02000', '#9e1e00', '#9c1c00', '#9a1a00', '#981800',
+                        '#961600', '#941400', '#921200', '#901000', '#8e0e00', '#8c0c00', '#8a0a00', '#880800', '#860600',
+                        '#840400', '#820200', '#800000', '#7e0000', '#7c0000', '#7a0000', '#780000', '#760000', '#740000',
+                        '#720000', '#700000', '#6e0000', '#6c0000', '#6a0000', '#680000', '#660000', '#640000', '#620000',
+                        '#600000', '#5e0000', '#5c0000', '#5a0000', '#580000', '#560000', '#540000', '#520000', '#500000',
+                        '#4e0000', '#4c0000', '#4a0000', '#480000', '#460000', '#440000', '#420000', '#400000', '#3e0000',
+                        '#3c0000', '#3a0000', '#380000', '#360000', '#340000', '#320000', '#300000', '#2e0000', '#2c0000',
+                        '#2a0000', '#280000', '#260000', '#240000', '#220000', '#200000', '#1e0000', '#1c0000', '#1a0000',
+                        '#180000', '#160000', '#140000', '#120000', '#100000', '#0e0000', '#0c0000', '#0a0000', '#080000',
+                        '#060000', '#040000', '#020000', '#000000']}

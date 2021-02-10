@@ -149,10 +149,16 @@ exports.Disease = function()
         .filter(ee.Filter.eq(this.COUNTRY, country));
       return operation;
     },
-    getCountries: function(countries)
+    getCountries: function(countries, from, to)
     {
       var operation = this.db
         .filter(ee.Filter.inList(this.COUNTRY, countries));
+      if(typeof(from)!="undefined" && typeof(to)!="undefined")
+      {
+        operation.filter(ee.Filter.and(
+              ee.Filter.gte(this.DATE, ee.Date(from))
+              ,ee.Filter.lte(this.DATE, ee.Date(to))));
+      }
       return operation;
     }
   }
@@ -188,6 +194,8 @@ exports.Climate=function()
       bounds[this.DATE_START] = from.format(this.ISO_MASK);
       bounds[this.DATE_END] = to.format(this.ISO_MASK);
       
+      
+      
       return {  operation: operation
                 ,bounds: bounds
                 ,geometry: geometry };
@@ -202,62 +210,19 @@ exports.Combined=function()
   var me = {
     DATE_START: "system:time_start",
     DATE_END: "system:time_end",
+    REGION: "countriesAndTerritories",
     COUNTRY: "fips",
+    DEATHS: "deaths_weekly",
+    CASES: "cases_weekly",
+    DEATHS_M: "deaths",
+    CASES_M: "cases",
+    // European Union FIPS country codes
+    EUROPEAN_UNION: [   "RO", "FI", "IT", "MT", "HR", "GR", "BU", "PO", "SP", "FR",
+                        "SW", "DA", "EN", "LG", "LH", "PL", "GM", "EZ", "LO", "HU",
+                        "SI", "AU", "LU", "NL", "BE", "EI", "CY" ],
     territory: Territory(),
-    db: ee.FeatureCollection("users/ruisreis/COVID19-CLIMATE-DS"),
-    dates: function()
-    {
-      var operation = 
-        ee.List(
-          this.db
-            .select(this.DATE_START)
-            // Two year span is the maximum
-            .iterate(
-              function(feature, list)
-              {
-                return ee.List(list).add(feature.getString("system:time_start"));
-              }, ee.List([])))
-          .distinct()
-          .sort();
-        
-      return operation;
-    },
-    getDate: function(date)
-    {
-      var operation = this.db
-        .filter(
-            ee.Filter.and(
-              ee.Filter.lte(this.DATE_START, date)
-              ,ee.Filter.gte(this.DATE_END, date)));
-      return operation;
-    },
-    getDateCountry: function(date, country)
-    {
-      var operation = this.db
-        .filter(
-            ee.Filter.and(
-              ee.Filter.lte(this.DATE_START, date)
-              ,ee.Filter.gte(this.DATE_END, date)
-              ,ee.Filter.eq(this.COUNTRY, country)));
-      return operation;
-    },
-    getDateCountries: function(date, countries)
-    {
-      var operation = this.db
-        .filter(
-            ee.Filter.and(
-              ee.Filter.lte(this.DATE_START, date)
-              ,ee.Filter.gte(this.DATE_END, date)
-              ,ee.Filter.inList(this.COUNTRY, countries)));
-      return operation;
-    },
-    getCountry: function(country)
-    {
-      var operation = this.db
-        .filter(ee.Filter.eq(this.COUNTRY, country));
-      return operation;
-    },
-    getCountries: function(countries)
+    db: ee.FeatureCollection("users/ruisreis/COVID19-CLIMATE-DS-PY"),
+    getData: function(countries)
     {
       var operation = this.db
         .filter(ee.Filter.inList(this.COUNTRY, countries));
