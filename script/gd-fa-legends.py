@@ -23,7 +23,7 @@ def getDates():
 
 def saveSRT(dates, mask, fps, filename):
     # Generate a SRT file that will legend the video 
-    srt = open(filename, "w", newline="\n")
+    srt = open(filename, "w", newline="")
     # One legend per frame
     frame = 1
     clock = datetime.datetime(2021,1,1,0,0,0)
@@ -31,7 +31,7 @@ def saveSRT(dates, mask, fps, filename):
         tick = clock+datetime.timedelta(seconds=fps)
         mark = dateutil.parser.parse(date)
         srt.write("%d\r\n" % frame)
-        srt.write("%s.000 -> %s.000\r\n" %(clock.strftime("%H:%M:%S"), tick.strftime("%H:%M:%S")))
+        srt.write("%s.000 --> %s.000\r\n" %(clock.strftime("%H:%M:%S"), tick.strftime("%H:%M:%S")))
         srt.write(mask % (mark.strftime("%Y-%m-%d")))
         srt.write("\r\n\r\n")
         clock = tick
@@ -41,5 +41,5 @@ def saveSRT(dates, mask, fps, filename):
 # Read dates
 dates = getDates()
 # Generate both files
-saveSRT(dates, "Deaths per million (%s)", 1, "../video/deaths.srp")
-saveSRT(dates, "Cases per million (%s)", 1, "../video/cases.srp")
+saveSRT(dates, "Deaths per million (%s)", 1, "../video/deaths.srt")
+saveSRT(dates, "Cases per million (%s)", 1, "../video/cases.srt")
